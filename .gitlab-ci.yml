@@ -29,5 +29,10 @@ test:
 compile:
   stage: build
   script:
-    - "mkdir -p bin"
-    - "cd cmd/kubeselect && go build -ldflags \"-extldflags '-static'\" -o $CI_PROJECT_DIR/bin/kubeselect"
+    - "mkdir -p bin/linux"
+    - "mkdir -p bin/macos"
+    - "cd cmd/kubeselect && GOOS=darwin GOARCH=amd64 go build -ldflags \"-extldflags '-static'\" -o $CI_PROJECT_DIR/bin/macos/kubeselect"
+    - "cd cmd/kubeselect && GOOS=linux GOARCH=amd64 go build -ldflags \"-extldflags '-static'\" -o $CI_PROJECT_DIR/bin/linux/kubeselect"
+  artifacts:
+    paths:
+      - "bin"
