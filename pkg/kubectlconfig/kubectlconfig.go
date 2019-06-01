@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/spf13/afero"
-	yaml "gopkg.in/yaml.v2"
 )
 
 func FindAllFiles(ctx context.Context, filesystem afero.Fs, root string) ([]ConfigFile, error) {
@@ -15,16 +14,11 @@ func FindAllFiles(ctx context.Context, filesystem afero.Fs, root string) ([]Conf
 		if !(strings.HasSuffix(path, ".yaml") || strings.HasSuffix(path, ".yml") || strings.HasSuffix(path, ".conf")) {
 			return nil
 		}
-		fp, err := filesystem.Open(path)
+		cfg, err := LoadConfigFile(ctx, filesystem, path)
 		if err != nil {
 			return err
 		}
-		defer fp.Close()
-		cfg := ConfigFile{Path: path}
-		if err := yaml.NewDecoder(fp).Decode(&cfg); err != nil {
-			return err
-		}
-		result = append(result, cfg)
+		result = append(result, *cfg)
 		return nil
 	})
 	return result, err
