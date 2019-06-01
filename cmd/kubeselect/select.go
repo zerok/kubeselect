@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	fuzzyfinder "github.com/ktr0731/go-fuzzyfinder"
 	"github.com/spf13/afero"
@@ -34,7 +35,7 @@ var selectCmd = &cobra.Command{
 			}
 		}
 		selection, err := fuzzyfinder.Find(options, func(i int) string {
-			return fmt.Sprintf("%s @ %s", options[i].context, options[i].context)
+			return fmt.Sprintf("%s // %s", strings.TrimPrefix(options[i].file, dotkube+"/"), options[i].context)
 		})
 		if err != nil {
 			logger.Fatal().Err(err).Msg("Selection failed")
