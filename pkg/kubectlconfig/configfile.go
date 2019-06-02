@@ -7,6 +7,9 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+// ConfigFile represents the content of a kubeconfig
+// file. Additionally, this also holds the path of that file inside
+// the Path field.
 type ConfigFile struct {
 	Path           string    `yaml:"-"`
 	APIVersion     string    `yaml:"apiVersion"`
@@ -16,6 +19,8 @@ type ConfigFile struct {
 	Contexts       []Context `yaml:"contexts"`
 }
 
+// HasContext checks all the contexts defined in the configfile for
+// one with the given name.
 func (c *ConfigFile) HasContext(name string) bool {
 	for _, ctx := range c.Contexts {
 		if ctx.Name == name {
@@ -25,6 +30,8 @@ func (c *ConfigFile) HasContext(name string) bool {
 	return false
 }
 
+// LoadConfigFile tries to load a ConfigFile from the given path
+// inside a filesystem.
 func LoadConfigFile(ctx context.Context, filesystem afero.Fs, path string) (*ConfigFile, error) {
 	fp, err := filesystem.Open(path)
 	if err != nil {
@@ -38,8 +45,10 @@ func LoadConfigFile(ctx context.Context, filesystem afero.Fs, path string) (*Con
 	return &cfg, nil
 }
 
+// Cluster represents a single cluster definition inside a ConfigFile.
 type Cluster struct{}
 
+// Context represents a single context definition inside a ConfigFile.
 type Context struct {
 	Name string `yaml:"name"`
 }

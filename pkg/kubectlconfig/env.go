@@ -15,6 +15,9 @@ type Environment struct {
 	Context    string
 }
 
+// Loads an environment based on the given slice of environment
+// variables. Internally, this also does some validation for which
+// filesystem access is required.
 func LoadEnvironment(ctx context.Context, filesystem afero.Fs, environ []string) (*Environment, error) {
 	e := &Environment{}
 	for _, env := range environ {
